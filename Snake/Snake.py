@@ -137,7 +137,6 @@ def drawSnake(snake):
 		pygame.draw.rect(DISPLAY, BLUE, snakeSegmentRect)
 		snakeSegmentRect = pygame.Rect(x, y, BLOCK_SIZE, BLOCK_SIZE)
 		pygame.draw.rect(DISPLAY, DARKBLUE, snakeSegmentRect, 1)
-		
 	
 def drawApple(coord):
 	x = coord['x'] * BLOCK_SIZE #+ 0.5 * BLOCK_SIZE
