@@ -11,7 +11,7 @@ assert WINDOW_WIDTH % BLOCK_SIZE == 0
 assert WINDOW_HEIGHT % BLOCK_SIZE == 0
 SIDE_TILES = 4
 
-WIN = 2048
+WIN = 64
 MOVES = []
 
 WHITE = 	(255, 255, 255)
@@ -54,7 +54,7 @@ def main():
 	
 	while True:
 		result = runGame()
-		if result != 'reset':
+		if result != 2:
 			showGameEndScreen(result)
 		
 def runGame():
@@ -90,7 +90,7 @@ def runGame():
 			board,new = updateBoard(board, direction)
 			direction = None
 			state = checkState(board)
-			if state != 'not over':
+			if state != -1:
 				drawGame(board, t)
 				return state
 			if new:
@@ -99,7 +99,7 @@ def runGame():
 		drawGame(board, t)
 		
 		if button('Reset', 15, BUFFER-35, 70, 25, DGRAY, RED):
-			return 'reset'
+			return 2 # reset
 		if button('Undo', WINDOW_WIDTH-85, BUFFER-35, 70, 25, DGRAY, LBLUE):
 			board = undo(board)
 			
@@ -111,27 +111,27 @@ def checkState(board):
 	for i in range(len(board)):
 		for j in range(len(board[i])):
 			if board[i][j] == WIN:
-				return 'win'
+				return 1 # win
 				
 	for i in range(len(board)):
 		for j in range(len(board[i])):
 			if board[i][j] == 0:
-				return 'not over'
+				return -1
 	
 	for i in range(len(board)-1): 
 		for j in range(len(board[i])-1): 
 			if board[i][j] == board[i+1][j] or board[i][j] == board[i][j+1]:
-				return 'not over'
+				return -1
 	
 	for k in range(len(board)-1):
 		if board[len(board)-1][k] == board[len(board)-1][k+1]:
-			return 'not over'
+			return -1
 	
 	for j in range(len(board)-1):
 		if board[j][len(board)-1] == board[j+1][len(board)-1]:
-			return 'not over'
+			return -1
 	
-	return 'game over'
+	return 0 # game over 
 			
 def updateBoard(board, direction):
 	
@@ -324,16 +324,10 @@ def text_objects(text, font, color=BLACK):
 	
 def showGameEndScreen(result):
 	
-	top = 'You'
-	bottom = 'WIN!'
-	fillColor = (255,255,102,100)
-	textColor = DGRAY
-	
-	if result == 'game over':
-		top = 'Game'
-		bottom = 'Over'
-		fillcolor = (80,80,80,128)
-		textColor = WHITE
+	top = 'You' if result else 'GAME'
+	bottom = 'WIN!' if result else 'OVER'
+	fillColor = (255,255,102,100) if result else (80,80,80,180)
+	textColor = DGRAY if result else WHITE
 		
 	rect = pygame.Surface((400,400), pygame.SRCALPHA)
 	rect.fill(fillColor)                  
@@ -356,7 +350,6 @@ def showGameEndScreen(result):
 	while True:
 		if checkForKeyPress():
 			pygame.event.get()
-			print('here')
 			return
 			
 def checkForKeyPress():
