@@ -96,20 +96,20 @@ def checkState(board):
 	for i in range(len(board)):
 		for j in range(len(board[i])):
 			if board[i][j] == 0:
-				return -1
+				return -1 #continue
 	
 	for i in range(len(board)-1): 
 		for j in range(len(board[i])-1): 
 			if board[i][j] == board[i+1][j] or board[i][j] == board[i][j+1]:
-				return -1
+				return -1 #continue
 	
 	for k in range(len(board)-1):
 		if board[len(board)-1][k] == board[len(board)-1][k+1]:
-			return -1
+			return -1 #continue
 	
 	for j in range(len(board)-1):
 		if board[j][len(board)-1] == board[j+1][len(board)-1]:
-			return -1
+			return -1 #continue
 	
 	return 0 # game over 
 			
