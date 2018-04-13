@@ -27,6 +27,8 @@ class Player(pygame.sprite.Sprite):
 		self.change_x = 0
 		self.change_y = 0
 		
+		jumps = 0
+		
 		self.level = None
 		
 	def update(self):
@@ -55,13 +57,14 @@ class Player(pygame.sprite.Sprite):
 			# Moving down
 			if self.change_y > 0:
 				self.rect.bottom = block.rect.top
+				self.change_y = 0
 			elif self.change_y < 0:
 				self.rect.top = block.rect.bottom
 	
 	def calc_grav(self):
 		
 		if self.change_y == 0:
-			self.change_y = 1
+			self.change_y = 0.2
 		else:
 			self.change_y += .35
 			
@@ -80,6 +83,12 @@ class Player(pygame.sprite.Sprite):
 		# If player is on a surface ie not falling
 		if len(platform_hit_list) > 0 or self.rect.bottom >= WINDOW_HEIGHT:
 			self.change_y = -10
+			self.jumps = 1
+		
+		# Double jump
+		elif self.jumps == 1:
+			self.change_y = -6.5
+			self.jumps = 0
 		
 	# Player movement 
 	def go_right(self):

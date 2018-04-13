@@ -20,21 +20,16 @@ class MovingPlatform(Platform):
 
 		# Move left/right
 		self.rect.x += self.change_x
-
+		
 		# Check for collision with player
-		hit = pygame.sprite.collide_rect(self, self.player)
-		if hit:
-			# We did hit the player. Shove the player around and
-			# assume he/she won't hit anything else.
-
-			# If we are moving right, set our right side
-			# to the left side of the item we hit
-			if self.change_x < 0:
-				self.player.rect.right = self.rect.left
-			else:
-				# Otherwise if we are moving left, do the opposite.
-				self.player.rect.left = self.rect.right
-
+		if self.change_x != 0:
+			if self.rect.top == self.player.rect.bottom:
+				if self.player.rect.centerx in range(self.rect.left, self.rect.right):
+					
+					# Move the player on the platform
+					self.player.rect.centerx += self.change_x
+					self.player.change_y = 0
+	
 		# Move up/down
 		self.rect.y += self.change_y
 
