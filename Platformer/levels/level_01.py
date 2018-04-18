@@ -33,3 +33,10 @@ class Level_01(Level):
 		block.player = self.player
 		block.level = self
 		self.platform_list.add(block)
+		
+		block = BreakablePlatform(60,60, (139,69,19))
+		block.rect.x = 0
+		block.rect.y = 450
+		block.player = self.player
+		block.level = self
+		self.platform_list.add(block)

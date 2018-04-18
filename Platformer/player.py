@@ -28,6 +28,8 @@ class Player(pygame.sprite.Sprite):
 		self.change_y = 0
 		
 		jumps = 0
+		double_jump = 0
+		plunge = 0
 		
 		self.level = None
 		
@@ -41,6 +43,12 @@ class Player(pygame.sprite.Sprite):
 		# Check for collisions
 		block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
 		for block in block_hit_list:
+			
+			# Reset movement flags
+			self.jumps = 0
+			self.double_jump = 0
+			self.plunge = 0
+			
 			# Moving right
 			if self.change_x > 0:
 				self.rect.right = block.rect.left
@@ -84,11 +92,20 @@ class Player(pygame.sprite.Sprite):
 		if len(platform_hit_list) > 0 or self.rect.bottom >= WINDOW_HEIGHT:
 			self.change_y = -10
 			self.jumps = 1
-		
+			
 		# Double jump
 		elif self.jumps == 1:
 			self.change_y = -6.5
-			self.jumps = 0
+			self.double_jump = 1
+			
+	def smash(self):
+		
+		if self.jumps != 0 or self.double_jump != 0:
+			self.change_y = 15
+			self.plunge = 1
+			
+	def plunging(self):
+		return self.plunge == 1
 		
 	# Player movement 
 	def go_right(self):

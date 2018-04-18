@@ -13,7 +13,6 @@ class MovingPlatform(Platform):
 	boundary_right = 0
 
 	player = None
-
 	level = None
 	
 	def update(self):
@@ -34,16 +33,13 @@ class MovingPlatform(Platform):
 		self.rect.y += self.change_y
 
 		# Check and see if we the player
-		hit = pygame.sprite.collide_rect(self, self.player)
-		if hit:
-			# We did hit the player. Shove the player around and
-			# assume he/she won't hit anything else.
-
-			# Reset our position based on the top/bottom of the object.
-			if self.change_y < 0:
-				self.player.rect.bottom = self.rect.top
-			else:
-				self.player.rect.top = self.rect.bottom
+		# TODO going up player clipps with platform
+		if self.change_y != 0:
+			if self.rect.top -1 == self.player.rect.bottom:
+				if self.player.rect.centerx in range(self.rect.left, self.rect.right):
+					self.player.rect.bottom = self.rect.top
+					self.player.change_y = 0
+					
 
 		# Check the boundaries and see if we need to reverse
 		# direction.
