@@ -1,42 +1,89 @@
-import socket, sys, threading, json
+import socket, sys, threading, re, pygame
+
+
 class Server():
 	
 	def __init__(self):
-		self.s = socket.socket()
-		self.host = socket.gethostname()
-		self.port = 9999 if sys.argv[1] == None else int(sys.argv[1])
-		self.address = (self.host, self.port)
+		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.port = int(sys.argv[1]) if len(sys.argv) == 2 else 9999
 		self.s.bind(('', self.port))
 		self.s.listen(5)
-		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		
-	def parseinput(self, message, clientAddress, clientSocket):
-		print(message)
-		
+		self.players = []
+		self.state = 'wating'
+		self.turn = 0
+		self.game = None
+				
 	def listen(self):
 		
 		print('Server Online...\nConnect on Port: %s' % (self.port))
 		
-		while True:
-			clientSocket, clientAddress = self.s.accept()
-			print("Found a new connection")
-			clientSocket.settimeout(None)
-			print("Spawning a thread")
+		while self.state == 'wating' and len(self.players) < 4:
 			
-			thread = threading.Thread(target = self.control, args = (clientSocket, clientAddress))
+			# Connect client to the server
+			conn, addr = self.s.accept()
+			conn.settimeout(None)
+			
+			# Add the player to the list
+			self.players.append((conn, addr))
+			
+			# Spawn a new thread for the player
+			thread = threading.Thread(target = self.client_thread)
 			thread.start()
-			
-	def control(self, clientSocket, clientAddress):
-		while True:
-			sys.stdout.flush()
-			instruction = clientSocket.recv(4096)
-			
-			if instruction is not None:
-				self.parseinput(message, clientAddress, clientSocket)
-				
-
-def main():
+		
+		if self.state != 'running':
+			self.update_game_state('running')
+		
+		print('Game Started')
+		
 	
+	def client_thread(self):
+		
+		player_num = len(self.players) - 1 
+		conn = self.players[player_num][0]
+		msg = '%s' % (player_num)
+		conn.sendall(msg.encode())
+		
+		print('Player %s connected from: %s' % (player_num+1, self.players[player_num][1][0]))
+		
+		while True:
+			
+			sys.stdout.flush()
+			data = conn.recv(2048).decode()
+			
+			if data is not None:
+				if player_num == self.turn:
+					self.parse_data(data)
+			
+			data = None
+				
+		print('Closed connection from: ' + str(addr))
+		conn.close()
+		
+	def parse_data(self, data):
+		
+		print(data)
+		
+		cmd = ''
+		arg = ''
+		
+		if data.startswith('/'):
+			
+			cmd = data.split(' ', 1)[0]
+			arg = data.split(' ', 1)[1]
+			
+			if cmd == '/state':
+				self.update_game_state(arg)
+	
+	def update_game_state(self, state):
+		self.state = state
+		
+def main():
+		
+	print('Setting up game...')
+	pygame.init()
+	
+	print('Starting Server')
 	server = Server()
 	server.listen()
 	
