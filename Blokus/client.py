@@ -7,7 +7,7 @@ server_address = ('localhost', port)
 sock.connect(server_address)
 
 try:
-	message = '/state start'.encode()
+	message = '/players 3'.encode()
 	sock.sendall(message)
 	
 	amount_received = 0

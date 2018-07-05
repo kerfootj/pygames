@@ -1,6 +1,5 @@
 import socket, sys, threading, re, pygame
 
-
 class Server():
 	
 	def __init__(self):
@@ -12,14 +11,17 @@ class Server():
 		self.players = []
 		self.state = 'wating'
 		self.turn = 0
-		self.game = None
+		self.total = [4,0]
+		
+		self.board = []
 				
 	def listen(self):
 		
 		print('Server Online...\nConnect on Port: %s' % (self.port))
 		
-		while self.state == 'wating' and len(self.players) < 4:
+		while len(self.players) < self.total[0]:
 			
+			print('len ' + str(len(self.players)) + '\t' + str(self.total))
 			# Connect client to the server
 			conn, addr = self.s.accept()
 			conn.settimeout(None)
@@ -56,6 +58,9 @@ class Server():
 					self.parse_data(data)
 			
 			data = None
+		
+		print('All players connected...\nStarting the game')
+		self.state = 'running'
 				
 		print('Closed connection from: ' + str(addr))
 		conn.close()
@@ -74,6 +79,9 @@ class Server():
 			
 			if cmd == '/state':
 				self.update_game_state(arg)
+			if cmd == '/players' and not self.total[1]:
+				self.total = [arg, 1]
+				print('Game created for ' + str(arg) + ' players')
 	
 	def update_game_state(self, state):
 		self.state = state
