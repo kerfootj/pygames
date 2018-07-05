@@ -32,14 +32,19 @@ class MovingPlatform(Platform):
 		# Move up/down
 		self.rect.y += self.change_y
 
-		# Check and see if we the player
-		# TODO going up player clipps with platform
-		if self.change_y != 0:
+		# Check for collision when moving down
+		if self.change_y > 0:
 			if self.rect.top -1 == self.player.rect.bottom:
-				if self.player.rect.centerx in range(self.rect.left, self.rect.right):
+				if self.player.rect.left in range(self.rect.left, self.rect.right) or self.player.rect.right in range(self.rect.left, self.rect.right):
 					self.player.rect.bottom = self.rect.top
 					self.player.change_y = 0
-					
+
+		# Check for collision when moving up
+		if self.change_y < 0:
+			if self.rect.top +1 == self.player.rect.bottom:
+				if self.player.rect.left in range(self.rect.left, self.rect.right) or self.player.rect.right in range(self.rect.left, self.rect.right):
+					self.player.rect.bottom = self.rect.top
+					self.player.change_y = 0
 
 		# Check the boundaries and see if we need to reverse
 		# direction.
