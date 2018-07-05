@@ -12,7 +12,7 @@ assert WINDOW_WIDTH % BLOCK_SIZE == 0
 assert WINDOW_HEIGHT % BLOCK_SIZE == 0
 SIDE_TILES = 4
 
-WIN = 64
+WIN = 2048
 MOVES = []
 
 UP = 'up'
