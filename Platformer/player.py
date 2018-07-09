@@ -1,4 +1,6 @@
 import pygame
+import constants
+from spritesheet_functions import SpriteSheet
 from pygame.locals import *
 
 WINDOW_HEIGHT = 600
@@ -12,16 +14,58 @@ class Player(pygame.sprite.Sprite):
 	
 	def __init__(self):
 		super().__init__()
-		
-		# Create Player Image
-		width = TILE_SIZE
-		height = TILE_SIZE
-		self.image = pygame.Surface([width, height])
-		self.image.fill(RED)
-		
-		# Image Reference 
+
+		self.walking_frames_l = []
+		self.walking_frames_r = []
+
+		self.direction = 'R'	
+
+		# Load Sprites
+		sprite_sheet = SpriteSheet("p1_walking.png")
+
+		image = sprite_sheet.get_image(0, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(64, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(128, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(192, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(256, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(320, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(384, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(448, 192, 64, 64)
+		self.walking_frames_r.append(image)
+		image = sprite_sheet.get_image(512, 192, 64, 64)
+		self.walking_frames_r.append(image)
+
+		image = sprite_sheet.get_image(0, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(64, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(128, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(192, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(256, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(320, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(384, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(448, 64, 64, 64)
+		self.walking_frames_l.append(image)
+		image = sprite_sheet.get_image(512, 64, 64, 64)
+		self.walking_frames_l.append(image)
+
+		# Starting image
+		self.image = self.walking_frames_r[0]
+
 		self.rect = self.image.get_rect()
-		
+
 		# Player Speed
 		self.speed = 6
 		self.change_x = 0
@@ -39,7 +83,16 @@ class Player(pygame.sprite.Sprite):
 		
 		# Move left/right
 		self.rect.x += self.change_x
-		
+		pos = self.rect.x + self.level.world_shift
+
+		# Update sprite animation
+		if self.direction == 'R':
+			frame = (pos // 30) % len(self.walking_frames_r)
+			self.image = self.walking_frames_r[frame]
+		else:
+			frame = (pos // 30) % len(self.walking_frames_l)
+			self.image = self.walking_frames_l[frame]
+
 		# Check for collisions
 		block_hit_list = pygame.sprite.spritecollide(self, self.level.platform_list, False)
 		for block in block_hit_list:
@@ -68,6 +121,7 @@ class Player(pygame.sprite.Sprite):
 				self.change_y = 0
 			elif self.change_y < 0:
 				self.rect.top = block.rect.bottom
+				self.change_y = 0
 	
 	def calc_grav(self):
 		
@@ -97,6 +151,7 @@ class Player(pygame.sprite.Sprite):
 		elif self.jumps == 1:
 			self.change_y = -6.5
 			self.double_jump = 1
+			self.jumps = 2
 			
 	def smash(self):
 		
@@ -110,9 +165,11 @@ class Player(pygame.sprite.Sprite):
 	# Player movement 
 	def go_right(self):
 		self.change_x = self.speed
+		self.direction = 'R'
 		
 	def go_left(self):
 		self.change_x = -1 * self.speed
+		self.direction = 'L'
 		
 	def stop(self):
 		self.change_x = 0
