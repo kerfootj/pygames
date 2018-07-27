@@ -23,43 +23,17 @@ class Player(pygame.sprite.Sprite):
 		# Load Sprites
 		sprite_sheet = SpriteSheet("p1_walking.png")
 
-		image = sprite_sheet.get_image(0, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(64, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(128, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(192, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(256, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(320, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(384, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(448, 192, 64, 64)
-		self.walking_frames_r.append(image)
-		image = sprite_sheet.get_image(512, 192, 64, 64)
-		self.walking_frames_r.append(image)
-
-		image = sprite_sheet.get_image(0, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(64, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(128, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(192, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(256, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(320, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(384, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(448, 64, 64, 64)
-		self.walking_frames_l.append(image)
-		image = sprite_sheet.get_image(512, 64, 64, 64)
-		self.walking_frames_l.append(image)
+		x_coords = [18,82,146,210,274,338,402,466,530]
+		
+		# Walking right
+		for x in x_coords:
+			image = sprite_sheet.get_image(x, 208, 28, 48)
+			self.walking_frames_r.append(image)
+		
+		#Walking left
+		for x in x_coords:
+			image = sprite_sheet.get_image(x, 80, 28, 48)
+			self.walking_frames_l.append(image)
 
 		# Starting image
 		self.image = self.walking_frames_r[0]
@@ -71,9 +45,9 @@ class Player(pygame.sprite.Sprite):
 		self.change_x = 0
 		self.change_y = 0
 		
-		jumps = 0
-		double_jump = 0
-		plunge = 0
+		self.jumps = 0
+		self.double_jump = 0
+		self.plunge = 0
 		
 		self.level = None
 		
