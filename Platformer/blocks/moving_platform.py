@@ -38,6 +38,10 @@ class MovingPlatform(Platform):
 				if self.player.rect.left in range(self.rect.left, self.rect.right) or self.player.rect.right in range(self.rect.left, self.rect.right):
 					self.player.rect.bottom = self.rect.top
 					self.player.change_y = 0
+			elif self.player.rect.top in range(self.rect.top, self.rect.bottom):
+				if self.player.rect.left in range(self.rect.left, self.rect.right) or self.player.rect.right in range(self.rect.left, self.rect.right):
+					self.player.rect.top = self.rect.bottom
+					self.player.change_y = self.change_y
 
 		# Check for collision when moving up
 		if self.change_y < 0:
